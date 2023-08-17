@@ -19,12 +19,15 @@ public class MaskedWord {
         return String.valueOf(maskedWord);
     }
 
-    public void openLetter(char enteredLetter) {
+    public boolean openLetter(char enteredLetter) {
+        boolean isOpen = false;
         for (int i = 0; i < word.length(); i++) {
             if(enteredLetter == word.charAt(i)) {
                 maskedWord[i] = enteredLetter;
+                isOpen = true;
             }
         }
+        return isOpen;
     }
 
 }

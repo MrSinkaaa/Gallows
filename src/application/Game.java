@@ -7,15 +7,14 @@ import java.util.Scanner;
 public class Game {
 
     private static Scanner input;
-    private static Scaffold[] scaffolds;
-    private static MaskedWord maskedWord;
-    private static List<Character> usedLetters;
-    private static List<Character> wrongLetters;
-    private static int errorCount;
+    private static Scaffold[] scaffolds = Scaffold.values();
+    private MaskedWord maskedWord;
+    private List<Character> usedLetters;
+    private List<Character> wrongLetters;
+    private int errorCount;
 
     public Game(Scanner input) {
         this.input = input;
-        scaffolds = Scaffold.values();
         usedLetters = new ArrayList<>();
         wrongLetters = new ArrayList<>();
         errorCount = 0;
@@ -28,31 +27,38 @@ public class Game {
             displayStateOfWord();
 
             char inputLetter = input.next().charAt(0);
-            if(!Character.isLetter(inputLetter)) {
-                displayMessageOfInvalidInput();
-                continue;
+            if (isGuessedLetterRight(inputLetter)) {
+                if (maskedWord.openLetter(inputLetter)) {
+                    usedLetters.add(inputLetter);
+                } else {
+                    wrongLetters.add(inputLetter);
+                    errorCount++;
+                    GameScore.addError();
+                }
             }
-            if(usedLetters.contains(inputLetter)) {
-                displayMessageOfRepeatedLetter();
-                continue;
-            }
-            maskedWord.openLetter(inputLetter);
-            usedLetters.add(inputLetter);
-            if(!maskedWord.getWord().contains(String.valueOf(inputLetter))) {
-                wrongLetters.add(inputLetter);
-                errorCount++;
-                GameScore.addError();
-            }
+
             displayStateOfScaffold();
             displayWrongLetters();
 
         }
-        if(isUserWon()) {
+        if (isUserWon()) {
             GameScore.addWin();
         } else {
             GameScore.addLose();
         }
         displayLastGameMessage();
+    }
+
+    private boolean isGuessedLetterRight(char inputLetter) {
+        if (!Character.isLetter(inputLetter)) {
+            displayMessageOfInvalidInput();
+            return false;
+        }
+        if (usedLetters.contains(inputLetter)) {
+            displayMessageOfRepeatedLetter();
+            return false;
+        }
+        return true;
     }
 
     private boolean isUserWon() {

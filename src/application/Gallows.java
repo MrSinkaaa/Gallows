@@ -14,14 +14,15 @@ public class Gallows {
         while(true) {
             displayQuestionToPlayer();
             switch (input.next().charAt(0)) {
-                case 'y':
+                case 'y' -> {
                     Game game = new Game(input);
                     game.startGame(dictionary.getRandomWord());
                     displayStatistics();
-                    break;
-                case 'n':
+                }
+                case 'n' -> {
                     displayGoodBye();
                     System.exit(0);
+                }
             }
         }
 
